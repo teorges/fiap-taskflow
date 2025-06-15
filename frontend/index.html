@@ -1,0 +1,23 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>TaskFlow Front</title>
+</head>
+<body>
+    <h1>Lista de Tarefas</h1>
+    <ul id="taskList"></ul>
+
+    <script>
+        fetch('http://localhost:3000/api/tasks')
+            .then(response => response.json())
+            .then(data => {
+                const list = document.getElementById('taskList');
+                data.forEach(task => {
+                    const li = document.createElement('li');
+                    li.textContent = `${task.title} - ${task.status}`;
+                    list.appendChild(li);
+                });
+            });
+    </script>
+</body>
+</html>
