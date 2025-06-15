@@ -1,26 +1,39 @@
-
 <template>
-  <div>
-    <h1>Taskflow - Frontend Vue</h1>
-    <TaskForm @taskSaved="fetchTasks" />
-    <TaskList :tasks="tasks" @taskDeleted="fetchTasks" @taskUpdated="fetchTasks" />
+  <div class="container">
+    <h1>TaskFlow - FIAP</h1>
+
+    <TaskForm :selectedTask="selectedTask" @taskSaved="fetchTasks" />
+
+    <TaskList
+      :tasks="tasks"
+      @taskDeleted="fetchTasks"
+      @editTask="editTask"
+    />
   </div>
 </template>
 
 <script>
-import TaskList from './components/TaskList.vue'
-import TaskForm from './components/TaskForm.vue'
 import axios from 'axios'
+import TaskForm from './components/TaskForm.vue'
+import TaskList from './components/TaskList.vue'
 
 export default {
-  components: { TaskList, TaskForm },
+  components: { TaskForm, TaskList },
   data() {
-    return { tasks: [] }
+    return {
+      tasks: [],
+      selectedTask: null
+    }
   },
   methods: {
     fetchTasks() {
-      axios.get('http://localhost:3000/api/tasks')
-        .then(res => { this.tasks = res.data })
+      axios.get('/api/tasks').then(res => {
+        this.tasks = res.data
+        this.selectedTask = null
+      })
+    },
+    editTask(task) {
+      this.selectedTask = task
     }
   },
   mounted() {
@@ -28,3 +41,19 @@ export default {
   }
 }
 </script>
+
+<style>
+.container {
+  max-width: 600px;
+  margin: 30px auto;
+  padding: 20px;
+  border: 1px solid #ddd;
+  border-radius: 8px;
+  background: #f9f9f9;
+  font-family: Arial, sans-serif;
+}
+h1 {
+  text-align: center;
+  color: #333;
+}
+</style>
