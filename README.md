@@ -152,16 +152,16 @@ npm run test
 
 | Item                    | Entrega                                     |
 | ----------------------- | ------------------------------------------- |
-| Microserviço CRUD       | TaskService com endpoints REST              |
-| Microserviço            | Notification + Log Service                  |
+| Microservico CRUD       | TaskService com endpoints REST              |
+| Microservico            | Notification + Log Service                  |
 | Banco de Dados          | MongoDB via Docker                          |
-| Testes Unitários        | Jest com mocks                              |
-| Testes de Integração    | Simula fluxo completo                       |
+| Testes Unitarios        | Jest com mocks                              |
+| Testes de Integracao    | Simula fluxo completo                       |
 | Docker                  | Dockerfile + docker-compose                 |
 | Swagger API             | Swagger no TaskService                      |
-| Comunicação Assíncrona  | Envio de logs e notificações entre serviços |
+| Comunicacao Assincrona  | Envio de logs e notificacoes entre servicos |
 | Frontend                | Vue + Vite + Axios                          |
-| Integração com Teams    | Webhook disparando eventos                  |
 | CI/CD        			  | GitHub Actions                 				|
+| Integracao com Teams    | Webhook disparando eventos                  |
 
 

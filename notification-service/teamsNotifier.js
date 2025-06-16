@@ -1,7 +1,8 @@
 const https = require('https')
 const { URL } = require('url')
 
-const webhookUrl = new URL(process.env.TEAMS_WEBHOOK_URL)
+//const webhookUrl = new URL(process.env.TEAMS_WEBHOOK_URL)
+const webhookUrl = ''
 
 function sendToTeams(message) {
   const data = JSON.stringify({ text: message })
