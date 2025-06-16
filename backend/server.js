@@ -4,6 +4,7 @@ const cors = require('cors')
 const bodyParser = require('body-parser')
 const swaggerUi = require('swagger-ui-express')
 const swaggerJsdoc = require('swagger-jsdoc')
+const { notifyTaskCreated } = require('./eventBus')  // Importação do módulo de eventos
 
 const app = express()
 app.use(cors())
@@ -69,6 +70,10 @@ app.get('/api/tasks', async (req, res) => {
 app.post('/api/tasks', async (req, res) => {
   const task = new Task(req.body)
   await task.save()
+
+  // Dispara o evento assíncrono para o Notification Service
+  notifyTaskCreated(task)
+
   res.status(201).json(task)
 })
 
