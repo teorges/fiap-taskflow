@@ -1,7 +1,20 @@
-version: '3'
+version: '3.8'
+
 services:
-  backend:
-    build: ./backend
+  mongo:
+    image: mongo
+    container_name: mongo
+    ports:
+      - "27017:27017"
+    volumes:
+      - mongo-data:/data/db
+    networks:
+      - internal
+
+  task-service:
+    build:
+      context: ./task-service
+    container_name: task-service
     ports:
       - "3000:3000"
     environment:
@@ -9,20 +22,31 @@ services:
     depends_on:
       - mongo
       - notification-service
-
-  frontend:
-    build: ./frontend
-    ports:
-      - "5173:5173"
-    depends_on:
-      - backend
-
-  mongo:
-    image: mongo
-    ports:
-      - "27017:27017"
+      - log-service
+    networks:
+      - internal
 
   notification-service:
-    build: ./notification-service
+    build:
+      context: ./notification-service
+    container_name: notification-service
     ports:
       - "4000:4000"
+    networks:
+      - internal
+
+  log-service:
+    build:
+      context: ./log-service
+    container_name: log-service
+    ports:
+      - "5000:5000"
+    networks:
+      - internal
+
+volumes:
+  mongo-data:
+
+networks:
+  internal:
+    driver: bridge

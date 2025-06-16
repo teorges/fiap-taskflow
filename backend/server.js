@@ -1,14 +1,31 @@
 const express = require('express')
 const mongoose = require('mongoose')
 const cors = require('cors')
-const bodyParser = require('body-parser')
 const swaggerUi = require('swagger-ui-express')
 const swaggerJsdoc = require('swagger-jsdoc')
-const { notifyTaskCreated } = require('./eventBus')  // Importação do módulo de eventos
+const { sendNotification, logEvent } = require('./eventBus')
 
 const app = express()
 app.use(cors())
-app.use(bodyParser.json())
+
+// Middleware para JSON com corpo vazio
+app.use(express.json({
+  strict: false,
+  verify: (req, res, buf) => {
+    if (buf.length === 0) {
+      req.emptyBody = true
+    }
+  }
+}))
+
+// Middleware para JSON malformado
+app.use((err, req, res, next) => {
+  if (err instanceof SyntaxError && err.status === 400 && 'body' in err) {
+    console.error('Erro de JSON malformado:', err.message)
+    return res.status(400).json({ message: 'JSON inválido.' })
+  }
+  next()
+})
 
 // Configuração Swagger
 const swaggerOptions = {
@@ -70,11 +87,10 @@ app.get('/api/tasks', async (req, res) => {
 app.post('/api/tasks', async (req, res) => {
   const task = new Task(req.body)
   await task.save()
-
-  // Dispara o evento assíncrono para o Notification Service
-  notifyTaskCreated(task)
-
-  res.status(201).json(task)
+  const notification = await sendNotification(`Nova tarefa criada: "${task.title}"`)
+  await logEvent(`Tarefa criada: ${task.title}`)
+  await sendToTeams('Tarefa criada.')
+  res.status(201).json({ message: 'Tarefa criada.', notification })
 })
 
 /**
@@ -104,8 +120,18 @@ app.post('/api/tasks', async (req, res) => {
  *         description: Tarefa atualizada
  */
 app.put('/api/tasks/:id', async (req, res) => {
-  await Task.findByIdAndUpdate(req.params.id, req.body)
-  res.sendStatus(200)
+  const task = await Task.findByIdAndUpdate(req.params.id, req.body, { new: true })
+
+  let notificationMessage = ''
+  if (task)
+    notificationMessage = `Tarefa atualizada: "${task.title}"`
+  else
+    notificationMessage = `Tentativa de atualização: Tarefa com ID ${req.params.id} não encontrada.`
+
+  const notification = await sendNotification(notificationMessage)
+  await logEvent(`Tarefa atualizada: ${task.title}`)
+  await sendToTeams('Tarefa atualizada.')
+  res.status(200).json({ message: 'Tarefa atualizada.', notification })
 })
 
 /**
@@ -124,8 +150,18 @@ app.put('/api/tasks/:id', async (req, res) => {
  *         description: Tarefa excluída
  */
 app.delete('/api/tasks/:id', async (req, res) => {
-  await Task.findByIdAndDelete(req.params.id)
-  res.sendStatus(200)
+  const task = await Task.findByIdAndDelete(req.params.id)
+
+  let notificationMessage = ''
+  if (task)
+    notificationMessage = `Tarefa excluída: "${task.title}"`
+  else
+    notificationMessage = `Tentativa de exclusão: Tarefa com ID ${req.params.id} não encontrada.`
+
+  const notification = await sendNotification(notificationMessage)
+  await logEvent(`Tarefa deletada: ${task.title}`)
+  await sendToTeams('Tarefa excluída.')
+  res.status(200).json({ message: 'Tarefa excluída.', notification:notificationMessage })
 })
 
 app.listen(3000, () => console.log('Backend running on port 3000'))

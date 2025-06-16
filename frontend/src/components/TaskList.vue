@@ -19,9 +19,15 @@ import axios from 'axios'
 
 export default {
   props: ['tasks'],
+  data() {
+    return {
+      task: { title: '', description: '' }
+    }
+  },
   methods: {
     deleteTask(id) {
-      axios.delete(`/api/tasks/${id}`).then(() => {
+	  axios.delete(`/api/tasks/${id}`, this.task).then(response => {
+		this.notificationMessage = response.data.notification || 'Tarefa deletada com sucesso!'
         this.$emit('taskDeleted')
       })
     },

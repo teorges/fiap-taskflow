@@ -27,12 +27,14 @@ export default {
   methods: {
     submitForm() {
       if (this.task._id) {
-        axios.put(`/api/tasks/${this.task._id}`, this.task).then(() => {
+		axios.put(`/api/tasks/${this.task._id}`, this.task).then(response => {
+		  this.notificationMessage = response.data.notification || 'Tarefa atualizada com sucesso!'
           this.$emit('taskSaved')
           this.resetForm()
         })
       } else {
-        axios.post('/api/tasks', this.task).then(() => {
+        axios.post('/api/tasks', this.task).then(response => {
+		  this.notificationMessage = response.data.notification || 'Tarefa criada com sucesso!'
           this.$emit('taskSaved')
           this.resetForm()
         })
