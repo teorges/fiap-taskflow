@@ -1,6 +1,21 @@
 
 # Taskflow FIAP Project
 
+## Rodando com Docker Compose
+```bash
+docker-compose up --build
+```
+
+### Notification-Service
+```bash
+docker-compose logs -f notification-service
+```
+
+### Log-Service
+```bash
+docker exec -it log-service tail -f /app/logs.txt
+```
+
 ## Rodando Localmente
 
 ### Backend
@@ -18,9 +33,6 @@ npm run dev
 ```
 
 ### Banco de Dados
-MongoDB local ou Docker (porta padrão 27017)
-
-## Rodando com Docker Compose
 ```bash
-docker-compose up --build
+MongoDB local ou Docker (porta padrão 27017)
 ```

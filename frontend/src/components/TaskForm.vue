@@ -6,6 +6,10 @@
       <input v-model="task.description" placeholder="Descrição" required />
       <button type="submit">Salvar</button>
     </form>
+
+    <div v-if="notificationMessage" class="notification">
+      {{ notificationMessage }}
+    </div>
   </div>
 </template>
 
@@ -16,7 +20,8 @@ export default {
   props: ['selectedTask'],
   data() {
     return {
-      task: { title: '', description: '' }
+      task: { title: '', description: '' },
+	  notificationMessage: ''
     }
   },
   watch: {
@@ -31,12 +36,22 @@ export default {
 		  this.notificationMessage = response.data.notification || 'Tarefa atualizada com sucesso!'
           this.$emit('taskSaved')
           this.resetForm()
+		  
+		  // Limpa a notificação depois de alguns segundos (opcional)
+          setTimeout(() => {
+            this.notificationMessage = '';
+          }, 5000);
         })
       } else {
         axios.post('/api/tasks', this.task).then(response => {
 		  this.notificationMessage = response.data.notification || 'Tarefa criada com sucesso!'
           this.$emit('taskSaved')
           this.resetForm()
+		  
+		  // Limpa a notificação depois de alguns segundos (opcional)
+          setTimeout(() => {
+            this.notificationMessage = '';
+          }, 5000);
         })
       }
     },
@@ -69,5 +84,14 @@ button {
 }
 button:hover {
   background-color: #0056b3;
+}
+
+.notification {
+  margin-top: 10px;
+  padding: 10px;
+  background-color: #d4edda;
+  border: 1px solid #c3e6cb;
+  color: #155724;
+  border-radius: 4px;
 }
 </style>

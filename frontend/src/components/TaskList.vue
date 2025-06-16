@@ -21,7 +21,8 @@ export default {
   props: ['tasks'],
   data() {
     return {
-      task: { title: '', description: '' }
+      task: { title: '', description: '' },
+	  notificationMessage: ''
     }
   },
   methods: {
@@ -29,6 +30,11 @@ export default {
 	  axios.delete(`/api/tasks/${id}`, this.task).then(response => {
 		this.notificationMessage = response.data.notification || 'Tarefa deletada com sucesso!'
         this.$emit('taskDeleted')
+		
+		// Limpa a notificação depois de alguns segundos (opcional)
+          setTimeout(() => {
+            this.notificationMessage = '';
+          }, 5000);
       })
     },
     editTask(task) {
