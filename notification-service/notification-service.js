@@ -1,5 +1,6 @@
 const express = require('express');
 const app = express();
+const { sendToTeams } = require('./teamsNotifier.js')
 
 // Middleware para JSON com corpo vazio permitido
 app.use(express.json({
@@ -24,6 +25,7 @@ app.post('/notify', (req, res) => {
   const message = req.body?.message
   if (message) {
     console.log('Recebido:', message)
+	//await sendToTeams(message)
     res.json({ message: `Notificação recebida: ${message}` })
   } else {
     console.log('Requisição sem mensagem.')

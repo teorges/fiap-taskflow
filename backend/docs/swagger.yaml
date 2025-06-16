@@ -1,0 +1,132 @@
+openapi: 3.0.0
+info:
+  title: TaskFlow Microservices API
+  version: "1.0.0"
+  description: API que integra Task Service, Notification Service e Log Service.
+
+servers:
+  - url: http://localhost:3000
+    description: Task Service
+  - url: http://localhost:4000
+    description: Notification Service
+  - url: http://localhost:5000
+    description: Log Service
+
+tags:
+  - name: Tasks
+    description: Endpoints para gestão de tarefas
+  - name: Notifications
+    description: Endpoints para envio de notificações
+  - name: Logs
+    description: Endpoints de registro de logs
+
+paths:
+  /api/tasks:
+    get:
+      tags:
+        - Tasks
+      summary: Listar todas as tarefas
+      responses:
+        '200':
+          description: Lista de tarefas
+
+    post:
+      tags:
+        - Tasks
+      summary: Criar nova tarefa
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                title:
+                  type: string
+                description:
+                  type: string
+      responses:
+        '201':
+          description: Tarefa criada
+
+  /api/tasks/{id}:
+    put:
+      tags:
+        - Tasks
+      summary: Atualizar uma tarefa
+      parameters:
+        - in: path
+          name: id
+          required: true
+          schema:
+            type: string
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                title:
+                  type: string
+                description:
+                  type: string
+      responses:
+        '200':
+          description: Tarefa atualizada
+
+    delete:
+      tags:
+        - Tasks
+      summary: Excluir uma tarefa
+      parameters:
+        - in: path
+          name: id
+          required: true
+          schema:
+            type: string
+      responses:
+        '200':
+          description: Tarefa excluída
+
+  /notify:
+    post:
+      tags:
+        - Notifications
+      summary: Enviar uma notificação
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                message:
+                  type: string
+      responses:
+        '200':
+          description: Notificação enviada
+
+  /log:
+    post:
+      tags:
+        - Logs
+      summary: Registrar um log
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                message:
+                  type: string
+                level:
+                  type: string
+                  enum: [info, warning, error]
+                timestamp:
+                  type: string
+                  format: date-time
+      responses:
+        '200':
+          description: Log registrado
