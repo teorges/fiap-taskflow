@@ -8,7 +8,7 @@ Sistema de gerenciamento de tarefas com arquitetura de microserviços, integrado
 
 ```
 /
-├── frontend/                # Vue + Vite
+├── frontend/                # Vue + Vite + Axios
 ├── backend/                 # Task Service (Node.js + Express + MongoDB)
 ├── notification-service/    # Notification Service (Webhook + Teams)
 ├── log-service/             # Log Service (salva logs locais)
@@ -155,13 +155,12 @@ npm run test
 | Microservico CRUD       | TaskService com endpoints REST              |
 | Microservico            | Notification + Log Service                  |
 | Banco de Dados          | MongoDB via Docker                          |
-| Testes Unitarios        | Jest com mocks                              |
-| Testes de Integracao    | Simula fluxo completo                       |
+| Testes Unit/Integracao  | Jest com mocks e fluxo completo             |
+| CI/CD        			  | GitHub Actions                 				|
 | Docker                  | Dockerfile + docker-compose                 |
 | Swagger API             | Swagger no TaskService                      |
 | Comunicacao Assincrona  | Envio de logs e notificacoes entre servicos |
 | Frontend                | Vue + Vite + Axios                          |
-| CI/CD        			  | GitHub Actions                 				|
 | Integracao com Teams    | Webhook disparando eventos                  |
 
 

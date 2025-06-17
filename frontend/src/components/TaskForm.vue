@@ -21,7 +21,7 @@ export default {
   data() {
     return {
       task: { title: '', description: '' },
-	  notificationMessage: ''
+      notificationMessage: ''
     }
   },
   watch: {
@@ -30,25 +30,37 @@ export default {
     }
   },
   methods: {
+    normalizeInput(input) {
+      return input
+        .normalize('NFD')
+        .replace(/[\u0300-\u036f]/g, '')      // Remove acentos
+        .replace(/[^a-zA-Z0-9\s]/g, '')       // Remove caracteres especiais (inclusive ç, ~, ´ etc)
+        .trim();                              // Remove espaços em excesso nas bordas
+    },
     submitForm() {
+      // Limpeza antes de enviar
+      const cleanedTask = {
+        ...this.task,
+        title: this.normalizeInput(this.task.title),
+        description: this.normalizeInput(this.task.description)
+      }
+
       if (this.task._id) {
-		axios.put(`/api/tasks/${this.task._id}`, this.task).then(response => {
-		  this.notificationMessage = response.data.notification || 'Tarefa atualizada com sucesso!'
+        axios.put(`/api/tasks/${this.task._id}`, cleanedTask).then(response => {
+          this.notificationMessage = response.data.notification || 'Tarefa atualizada com sucesso!'
           this.$emit('taskSaved')
           this.resetForm()
-		  
-		  // Limpa a notificação depois de alguns segundos (opcional)
+
           setTimeout(() => {
             this.notificationMessage = '';
           }, 5000);
         })
       } else {
-        axios.post('/api/tasks', this.task).then(response => {
-		  this.notificationMessage = response.data.notification || 'Tarefa criada com sucesso!'
+        axios.post('/api/tasks', cleanedTask).then(response => {
+          this.notificationMessage = response.data.notification || 'Tarefa criada com sucesso!'
           this.$emit('taskSaved')
           this.resetForm()
-		  
-		  // Limpa a notificação depois de alguns segundos (opcional)
+
           setTimeout(() => {
             this.notificationMessage = '';
           }, 5000);

@@ -15,7 +15,7 @@ app.use(express.json({
 // Tratamento de JSON malformado
 app.use((err, req, res, next) => {
   if (err instanceof SyntaxError && err.status === 400 && 'body' in err) {
-    console.error('Erro de JSON malformado:', err.message)
+    //console.error('Erro de JSON malformado:', err.message)
     return res.status(400).json({ message: 'JSON inválido no Notification Service.' })
   }
   next()
