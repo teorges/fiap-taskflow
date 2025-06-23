@@ -1,3 +1,4 @@
+require('dotenv').config();
 const express = require('express');
 const app = express();
 const { sendToTeams } = require('./teamsNotifier.js')
@@ -21,12 +22,17 @@ app.use((err, req, res, next) => {
   next()
 })
 
-app.post('/notify', (req, res) => {
+app.post('/notify', async (req, res) => {
   const message = req.body?.message
   if (message) {
     console.log('Recebido:', message)
-	//await sendToTeams(message)
-    res.json({ message: `Notificação recebida: ${message}` })
+    try {
+      await sendToTeams(message)
+      res.json({ message: `Notificação enviada: ${message}` })
+    } catch (error) {
+      console.error('Falha ao enviar para Teams:', error)
+      res.status(500).json({ message: 'Erro ao enviar notificação para o Teams.' })
+    }
   } else {
     console.log('Requisição sem mensagem.')
     res.json({ message: 'Nenhuma mensagem recebida.' })
