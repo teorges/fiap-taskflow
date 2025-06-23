@@ -105,8 +105,8 @@ curl -X POST http://localhost:5000/log -H "Content-Type: application/json" -d '{
 ## 📝 Integração com Microsoft Teams
 
 1. Crie um **Incoming Webhook** em um canal no Teams
-2. Copie a URL gerada
-3. Crie um arquivo `.env` na pasta `notification-service` com:
+2. Copie a URL gerada (Testes: https://webhook.site/)
+3. Cole no arquivo `.env` na pasta `notification-service`
 
 ```
 TEAMS_WEBHOOK_URL=https://outlook.office.com/webhook/...
